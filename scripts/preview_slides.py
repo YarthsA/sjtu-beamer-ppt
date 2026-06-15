@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-preview_slides.py — 将 Beamer PDF 渲染为单独的幻灯片图片，用于 Visual QA
-用法: python preview_slides.py --input slides.pdf [--output-dir previews/] [--scale 2]
-依赖: pypdfium2, Pillow
+preview_slides.py — 将 Beamer PDF 渲染为单独的高清幻灯片图片，用于 Visual QA
+用法: python preview_slides.py --input slides.pdf [--output-dir previews/] [--dpi 200]
+依赖: PyMuPDF (fitz)
 """
 
 import argparse
@@ -10,23 +10,17 @@ import sys
 from pathlib import Path
 
 try:
-    import pypdfium2 as pdfium
+    import fitz  # PyMuPDF
 except ImportError:
-    print("错误: 需要 pypdfium2。运行: pip install pypdfium2", file=sys.stderr)
-    sys.exit(1)
-
-try:
-    from PIL import Image
-except ImportError:
-    print("错误: 需要 Pillow。运行: pip install Pillow", file=sys.stderr)
+    print("Error: PyMuPDF not found. Run: pip install PyMuPDF", file=sys.stderr)
     sys.exit(1)
 
 
-def preview_slides(input_path, output_dir=None, scale=2):
-    """将 PDF 每页渲染为 PNG 图片"""
+def preview_slides(input_path, output_dir=None, dpi=200):
+    """Render each PDF page as a PNG image using PyMuPDF."""
     input_path = Path(input_path)
     if not input_path.exists():
-        print(f"错误: PDF 文件不存在: {input_path}", file=sys.stderr)
+        print(f"Error: PDF not found: {input_path}", file=sys.stderr)
         sys.exit(1)
 
     if output_dir is None:
@@ -36,38 +30,37 @@ def preview_slides(input_path, output_dir=None, scale=2):
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"正在打开 PDF: {input_path}")
-    doc = pdfium.PdfDocument(str(input_path))
-    page_count = len(doc)
-    print(f"  共 {page_count} 页，渲染倍率: {scale}x")
+    print(f"Opening PDF: {input_path}")
+    doc = fitz.open(str(input_path))
+    page_count = doc.page_count
+    print(f"  Pages: {page_count}, DPI: {dpi}")
 
     for i in range(page_count):
         page = doc[i]
-        print(f"  渲染第 {i + 1}/{page_count} 页 ...", end="\r")
+        print(f"  Rendering page {i + 1}/{page_count} ...", end="\r")
 
-        bitmap = page.render(scale=scale)
-        pil_image = bitmap.to_pil()
-        bitmap.close()
+        mat = fitz.Matrix(dpi / 72, dpi / 72)
+        pix = page.get_pixmap(matrix=mat, alpha=False)
 
         out_path = output_dir / f"slide_{i + 1:04d}.png"
-        pil_image.save(str(out_path), "PNG", optimize=True)
-        pil_image.close()
+        pix.save(str(out_path))
+        pix = None  # free memory
 
     doc.close()
-    print(f"\n预览图片已保存到: {output_dir}")
-    print(f"  共 {page_count} 张图片")
+    print(f"\nPreview images saved to: {output_dir}")
+    print(f"  {page_count} images at {dpi} DPI")
 
     return str(output_dir)
 
 
 def main():
-    parser = argparse.ArgumentParser(description="将 Beamer PDF 渲染为幻灯片图片（用于 Visual QA）")
-    parser.add_argument("--input", "-i", required=True, help="输入 PDF 文件路径")
-    parser.add_argument("--output-dir", "-o", default=None, help="输出图片目录（默认: <pdf名>_previews/）")
-    parser.add_argument("--scale", "-s", type=float, default=2, help="渲染倍率（默认 2）")
+    parser = argparse.ArgumentParser(description="Render Beamer PDF to slide images (for Visual QA)")
+    parser.add_argument("--input", "-i", required=True, help="Input PDF path")
+    parser.add_argument("--output-dir", "-o", default=None, help="Output directory (default: <pdf>_previews/)")
+    parser.add_argument("--dpi", "-d", type=int, default=200, help="Render DPI (default: 200)")
     args = parser.parse_args()
 
-    preview_slides(args.input, args.output_dir, args.scale)
+    preview_slides(args.input, args.output_dir, args.dpi)
 
 
 if __name__ == "__main__":
