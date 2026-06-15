@@ -22,8 +22,8 @@
 
 | 引擎 | 文字可编辑 | 依赖 | 速度 |
 |------|-----------|------|------|
-| WPS AI | ✅ | WPS Office（免费版即可） | ~12s |
-| WPS basic | ✅ | WPS Office（免费版即可） | ~3s |
+| WPS AI | ✅ | WPS Office | ~12s |
+| WPS basic | ✅ | WPS Office | ~3s |
 | PyMuPDF | ❌ 图片 | pip install PyMuPDF | ~10s |
 
 **没有 WPS？** PyMuPDF 引擎会自动接管，生成 300 DPI 高清图片 PPTX。
@@ -164,7 +164,7 @@ pip install PyMuPDF python-pptx Pillow
 
 ### 可选
 
-- **WPS Office** — 提供可编辑 PPTX 输出（免费版即可，从 [wps.cn](https://www.wps.cn/) 下载）
+- **WPS Office** — 提供可编辑 PPTX 输出（从 [wps.cn](https://www.wps.cn/) 下载安装）
 
 ## 许可
 
