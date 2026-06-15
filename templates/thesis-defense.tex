@@ -1,0 +1,195 @@
+% !TeX program = xelatex
+% !TeX encoding = UTF-8
+% thesis-defense.tex — 答辩模板
+% 适用于：本科/硕士/博士毕业答辩
+
+\documentclass[
+    aspectratio=169,
+    fontset=windows,
+]{ctexbeamer}
+
+\mode<presentation>
+
+\usetheme{sjtubeamer}
+% 可选参数（用逗号分隔）:
+%   封面: maxplus(现代)/max(经典)/min(极简)
+%   颜色: red(交大红)/blue(交大蓝)
+%   亮度: light(浅色)/dark(深色)
+% 示例: \usetheme[max,red,dark]{sjtubeamer}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{fontawesome5}
+\usepackage{multicol}
+\usepackage{hyperref}
+
+\graphicspath{{figures/}}
+
+\AtBeginSection[]{
+  \begin{frame}
+    \tableofcontents[currentsection,hideallsubsections]
+  \end{frame}
+}
+
+% ── 答辩信息 ──
+\title{论文标题}
+\subtitle{Thesis Title}
+\author{答辩人姓名}
+\institute[学院]{学院名称 \quad 专业名称}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{汇报提纲}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+% ══════════════════════════════════════
+\section{选题背景与意义}
+% ══════════════════════════════════════
+
+\begin{frame}{研究背景}
+  \begin{itemize}
+    \item 行业/领域背景
+    \item 现有问题/挑战
+    \item 研究意义与价值
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{国内外研究现状}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{国外研究}
+      \begin{itemize}
+        \item 研究方向一
+        \item 研究方向二
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{国内研究}
+      \begin{itemize}
+        \item 研究方向一
+        \item 研究方向二
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ══════════════════════════════════════
+\section{研究内容与方法}
+% ══════════════════════════════════════
+
+\begin{frame}{研究内容}
+  \begin{block}{研究目标}
+    用一段话概括研究的核心目标。
+  \end{block}
+
+  \begin{enumerate}
+    \item 研究内容一
+    \item 研究内容二
+    \item 研究内容三
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{技术路线}
+  % 此处可插入技术路线图
+  \begin{center}
+    % \includegraphics[width=0.85\textwidth]{tech-roadmap.png}
+    技术路线图（待插入）
+  \end{center}
+\end{frame}
+
+\begin{frame}{核心方法}
+  \begin{equation}
+    % 公式占位
+    y = f(x; \theta)
+  \end{equation}
+
+  \begin{itemize}
+    \item 方法创新点一
+    \item 方法创新点二
+  \end{itemize}
+\end{frame}
+
+% ══════════════════════════════════════
+\section{实验与结果分析}
+% ══════════════════════════════════════
+
+\begin{frame}{实验设计}
+  \begin{itemize}
+    \item \textbf{数据集}: 描述
+    \item \textbf{评估指标}: 描述
+    \item \textbf{对比方法}: 描述
+    \item \textbf{实验环境}: 描述
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{主要结果}
+  \begin{table}
+    \centering
+    \begin{tabular}{lccc}
+      \toprule
+      \textbf{方法} & \textbf{指标 A} & \textbf{指标 B} & \textbf{指标 C} \\
+      \midrule
+      方法 1 & 82.1 & 75.3 & 78.2 \\
+      方法 2 & 84.5 & 77.1 & 80.1 \\
+      \textbf{本文方法} & \textbf{89.2} & \textbf{81.6} & \textbf{84.3} \\
+      \bottomrule
+    \end{tabular}
+    \caption{主要实验结果}
+  \end{table}
+\end{frame}
+
+\begin{frame}{消融实验}
+  \begin{table}
+    \centering
+    \begin{tabular}{lc}
+      \toprule
+      \textbf{配置} & \textbf{指标 A} \\
+      \midrule
+      完整模型 & 89.2 \\
+      去掉模块 A & 86.1 \\
+      去掉模块 B & 87.3 \\
+      \bottomrule
+    \end{tabular}
+    \caption{消融实验结果}
+  \end{table}
+\end{frame}
+
+% ══════════════════════════════════════
+\section{总结与展望}
+% ══════════════════════════════════════
+
+\begin{frame}{论文总结}
+  \begin{enumerate}
+    \item 贡献一
+    \item 贡献二
+    \item 贡献三
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{不足与展望}
+  \begin{itemize}
+    \item 不足之处一
+    \item 不足之处二
+    \item 未来改进方向
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{致谢}
+  \begin{center}
+    \Large
+    感谢导师和评委老师的指导与建议！\\[2em]
+    \normalsize
+    \faIcon{envelope}\quad email@example.com
+  \end{center}
+\end{frame}
+
+\makebottom
+
+\end{document}

@@ -1,0 +1,101 @@
+% !TeX program = xelatex
+% !TeX encoding = UTF-8
+% group-meeting.tex — 组会进度汇报模板
+% 适用于：课题组周会/双周会进度汇报
+
+\documentclass[
+    aspectratio=169,
+    fontset=windows,
+]{ctexbeamer}
+
+\mode<presentation>
+
+\usetheme{sjtubeamer}
+% 可选参数（用逗号分隔）:
+%   封面: maxplus(现代)/max(经典)/min(极简)
+%   颜色: red(交大红)/blue(交大蓝)
+%   亮度: light(浅色)/dark(深色)
+% 示例: \usetheme[max,red,dark]{sjtubeamer}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{fontawesome5}
+
+\graphicspath{{figures/}}
+
+\AtBeginSection[]{
+  \begin{frame}
+    \tableofcontents[currentsection,hideallsubsections]
+  \end{frame}
+}
+
+% ── 汇报信息 ──
+\title{组会汇报}
+\subtitle{进度汇报 — \today}
+\author{汇报人}
+\institute[课题组]{课题组名称}
+
+\begin{document}
+
+\maketitle
+
+% ══════════════════════════════════════
+\section{本周工作}
+% ══════════════════════════════════════
+
+\begin{frame}{完成的工作}
+  \begin{itemize}
+    \item \textbf{任务一}: 完成情况描述
+    \item \textbf{任务二}: 完成情况描述
+    \item \textbf{任务三}: 完成情况描述
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{初步结果}
+  % 插入本周实验/调试结果
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{结果}
+      % \includegraphics[width=\textwidth]{result.png}
+      结果图（待插入）
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{分析}
+      \begin{itemize}
+        \item 观察一
+        \item 观察二
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ══════════════════════════════════════
+\section{遇到的问题}
+% ══════════════════════════════════════
+
+\begin{frame}{问题与困难}
+  \begin{alertblock}{问题一}
+    问题描述及已尝试的解决方法。
+  \end{alertblock}
+
+  \begin{alertblock}{问题二}
+    问题描述及需要的帮助。
+  \end{alertblock}
+\end{frame}
+
+% ══════════════════════════════════════
+\section{下周计划}
+% ══════════════════════════════════════
+
+\begin{frame}{下周计划}
+  \begin{enumerate}
+    \item \textbf{优先级高}: 计划一
+    \item \textbf{优先级中}: 计划二
+    \item \textbf{优先级低}: 计划三
+  \end{enumerate}
+\end{frame}
+
+\makebottom
+
+\end{document}

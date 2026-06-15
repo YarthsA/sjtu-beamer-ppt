@@ -1,0 +1,21 @@
+# 编译产物
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+*.fls
+*.fdb_latexmk
+*.xdv
+*.synctex.gz
+
+# 输出文件（用户自行编译生成）
+*.pdf
+*.pptx
+
+# 临时文件
+*~
+*.swp
+*.bak

@@ -1,0 +1,133 @@
+% !TeX program = xelatex
+% !TeX encoding = UTF-8
+% basic-lecture.tex — 基础讲座模板
+% 主题选项: maxplus/max/min, red/blue, light/dark, topright/bottomright
+% 导航栏: miniframes/infolines/sidebar/default/smoothbars/split/shadow/tree/smoothtree
+
+\documentclass[
+    aspectratio=169,  % 16:9 比例
+    fontset=windows,  % Windows 中文字体（SimSun/SimHei）
+]{ctexbeamer}
+
+\mode<presentation>
+
+% ── 主题选择 ──
+% 修改以下行切换风格
+\usetheme{sjtubeamer}
+% 可选参数（用逗号分隔）:
+%   封面: maxplus(现代)/max(经典)/min(极简)
+%   颜色: red(交大红)/blue(交大蓝)
+%   亮度: light(浅色)/dark(深色)
+% 示例: \usetheme[max,red,dark]{sjtubeamer}
+% maxplus: 现代全幅封面 | max: 经典渐变封面 | min: 极简封面
+% red/blue: 主色调 | light/dark: 亮暗模式
+% topright/bottomright: 校徽位置
+
+% ── 常用宏包 ──
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{fontawesome5}
+\usepackage{multicol}
+
+\graphicspath{{figures/}}
+
+% ── 节目录 ──
+\AtBeginSection[]{
+  \begin{frame}
+    \tableofcontents[currentsection,hideallsubsections]
+  \end{frame}
+}
+
+% ── 标题信息 ──
+\title{幻灯片标题}
+\subtitle{Subtitle}
+\author{作者姓名}
+\institute[缩写]{单位全称}
+\date{\today}
+
+\begin{document}
+
+% ── 封面 ──
+\maketitle
+
+% ── 目录 ──
+\begin{frame}{目录}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+% ══════════════════════════════════════
+% 第一节
+% ══════════════════════════════════════
+\section{第一节标题}
+
+\begin{frame}{幻灯片标题}
+  \begin{itemize}
+    \item 第一点内容
+    \item 第二点内容
+    \item 第三点内容
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{双栏布局}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{左栏}
+      \begin{itemize}
+        \item 内容 A
+        \item 内容 B
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{右栏}
+      \begin{itemize}
+        \item 内容 C
+        \item 内容 D
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ══════════════════════════════════════
+% 第二节
+% ══════════════════════════════════════
+\section{第二节标题}
+
+\begin{frame}{公式示例}
+  \begin{block}{重要公式}
+    \begin{equation}
+      E = mc^2
+    \end{equation}
+  \end{block}
+
+  \begin{alertblock}{注意}
+    这是一个警告框。
+  \end{alertblock}
+
+  \begin{exampleblock}{示例}
+    这是一个示例框。
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{代码示例}
+  \begin{codeblock}[language=Python]{Python 代码}
+import numpy as np
+
+def hello():
+    print("Hello, SJTU!")
+  \end{codeblock}
+\end{frame}
+
+% ── 参考文献（如有） ──
+% \usepackage[backend=biber,style=gb7714-2015]{biblatex}
+% \addbibresource{ref.bib}
+% \begin{frame}[allowframebreaks]
+%   \printbibliography[heading=none]
+% \end{frame}
+
+% ── 结束页 ──
+\makebottom
+
+\end{document}
