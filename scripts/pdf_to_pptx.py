@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-pdf_to_pptx.py — 将 Beamer PDF 转换为 PPTX
-优先使用 WPS 本地转换（文字可编辑），回退到 PyMuPDF 图片模式。
+pdf_to_pptx.py — Convert Beamer PDF to PPTX
+Auto-detects best available engine: WPS (editable text) > PyMuPDF (image fallback).
 
-用法:
-  python pdf_to_pptx.py --input slides.pdf                    # 自动选择最佳方式
-  python pdf_to_pptx.py --input slides.pdf --engine wps       # 强制 WPS
-  python pdf_to_pptx.py --input slides.pdf --engine pymupdf   # 强制 PyMuPDF 图片
-  python pdf_to_pptx.py --input slides.pdf --engine wps-basic # WPS basic 模式（更快）
+Usage:
+  python pdf_to_pptx.py --input slides.pdf                    # auto-detect engine
+  python pdf_to_pptx.py --input slides.pdf --engine wps       # force WPS
+  python pdf_to_pptx.py --input slides.pdf --engine pymupdf   # force PyMuPDF image
 """
 
 import argparse
+import os
 import shutil
 import subprocess
 import sys
@@ -18,28 +18,61 @@ import tempfile
 from pathlib import Path
 
 
-# WPS kwpsconvert.exe 路径候选
-WPS_CANDIDATES = [
-    r"D:\WPS Office\12.1.0.26895\office6\kwpsconvert.exe",
-    r"D:\WPS Office\12.1.0.26375\office6\kwpsconvert.exe",
-    r"C:\Program Files\kingsoft\office6\kwpsconvert.exe",
-]
-
-
 def find_wps():
-    """查找本地 WPS kwpsconvert.exe"""
-    for p in WPS_CANDIDATES:
-        if Path(p).exists():
-            return p
-    # 尝试 PATH
-    return shutil.which("kwpsconvert")
+    """Dynamically locate WPS kwpsconvert.exe on this system."""
+    # 1. Check PATH
+    path = shutil.which("kwpsconvert")
+    if path:
+        return path
+
+    # 2. Search common install locations via environment variables
+    env_candidates = []
+    for var in ("LOCALAPPDATA", "PROGRAMFILES", "PROGRAMFILES(X86)"):
+        base = os.environ.get(var, "")
+        if base:
+            env_candidates.append(Path(base) / "kingsoft")
+
+    # 3. Search registry (Windows only)
+    try:
+        import winreg
+        for hive in (winreg.HKEY_CURRENT_USER, winreg.HKEY_LOCAL_MACHINE):
+            for subkey in [
+                r"SOFTWARE\Kingsoft\Office",
+                r"SOFTWARE\WOW6432Node\Kingsoft\Office",
+            ]:
+                try:
+                    with winreg.OpenKey(hive, subkey) as key:
+                        for i in range(winreg.QueryInfoKey(key)[0]):
+                            name = winreg.EnumKey(key, i)
+                            try:
+                                with winreg.OpenKey(key, name) as sub:
+                                    val, _ = winreg.QueryValueEx(sub, "InstallPath")
+                                    if val:
+                                        env_candidates.append(Path(val))
+                            except OSError:
+                                pass
+                except OSError:
+                    pass
+    except ImportError:
+        pass  # not Windows
+
+    # 4. Scan candidate directories for kwpsconvert.exe
+    for base in env_candidates:
+        if not base.exists():
+            continue
+        # WPS version dirs are typically under office6/
+        for pattern in ["**/office6/kwpsconvert.exe", "**/kwpsconvert.exe"]:
+            for match in base.glob(pattern):
+                return str(match)
+
+    return None
 
 
 def convert_wps(pdf_path, output_path, engine="ai"):
-    """使用 WPS 本地转换 PDF → PPTX（文字可编辑）"""
+    """Convert PDF to editable PPTX using WPS (requires WPS VIP)."""
     wps = find_wps()
     if not wps:
-        return False, "WPS kwpsconvert.exe not found"
+        return False, "WPS not found on this system"
 
     cmd = [
         wps, "pdf2ppt",
@@ -57,21 +90,21 @@ def convert_wps(pdf_path, output_path, engine="ai"):
     if result.returncode == 0 and output_path.exists():
         return True, None
     elif result.returncode in (100, 101):
-        return False, "WPS requires VIP account"
+        return False, "WPS requires VIP account (exit 100/101)"
     else:
         msg = stdout.strip() or stderr.strip() or f"exit code {result.returncode}"
         return False, msg
 
 
 def convert_pymupdf(pdf_path, output_path, dpi=300):
-    """使用 PyMuPDF 渲染图片逐页插入 PPTX（不可编辑，但清晰）"""
+    """Convert PDF to PPTX as high-res images (universal fallback, not editable)."""
     try:
         import fitz
         from PIL import Image
         from pptx import Presentation
         from pptx.util import Inches
     except ImportError as e:
-        return False, f"Missing dependency: {e}"
+        return False, f"Missing dependency: {e}. Run: pip install PyMuPDF python-pptx Pillow"
 
     doc = fitz.open(str(pdf_path))
     page_count = doc.page_count
@@ -79,9 +112,8 @@ def convert_pymupdf(pdf_path, output_path, dpi=300):
         doc.close()
         return False, "PDF has no pages"
 
-    # 16:9 standard slide size (EMU)
-    SLIDE_W_EMU = 12192000
-    SLIDE_H_EMU = 6858000
+    SLIDE_W_EMU = 12192000  # 13.333 inches = 33.867cm
+    SLIDE_H_EMU = 6858000   # 7.5 inches = 19.05cm
     SLIDE_W_IN = 13.333
     SLIDE_H_IN = 7.5
 
@@ -105,10 +137,8 @@ def convert_pymupdf(pdf_path, output_path, dpi=300):
             img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
             pix = None
 
-            # Center crop to 16:9
             iw, ih = img.size
-            ia = iw / ih
-            sa = slide_w_px / slide_h_px
+            ia, sa = iw / ih, slide_w_px / slide_h_px
             if ia > sa:
                 nw, nh = int(iw * slide_h_px / ih), slide_h_px
             else:
@@ -137,10 +167,10 @@ def main():
     parser.add_argument("--input", "-i", required=True, help="Input PDF path")
     parser.add_argument("--output", "-o", default=None, help="Output PPTX path")
     parser.add_argument("--engine", "-e", default="auto",
-                        choices=["auto", "wps", "wps-basic", "pymupdf"],
-                        help="Conversion engine (default: auto = WPS first, PyMuPDF fallback)")
+                        choices=["auto", "wps", "pymupdf"],
+                        help="Conversion engine (default: auto)")
     parser.add_argument("--dpi", "-d", type=int, default=300,
-                        help="PyMuPDF render DPI (only for pymupdf engine, default: 300)")
+                        help="PyMuPDF render DPI (pymupdf engine only, default: 300)")
     args = parser.parse_args()
 
     pdf_path = Path(args.input)
@@ -155,28 +185,19 @@ def main():
     success = False
     used_engine = ""
 
+    # Try WPS (auto or explicit)
     if args.engine in ("auto", "wps"):
-        # Try AI engine first, then basic
-        for eng in (["ai"] if args.engine == "wps" else ["ai", "basic"]):
+        for eng in ["ai", "basic"]:
             ok, err = convert_wps(pdf_path, output_path, engine=eng)
             if ok:
                 success = True
                 used_engine = f"WPS ({eng})"
                 break
-            elif args.engine == "wps":
+            if args.engine == "wps":
                 print(f"  WPS failed: {err}", file=sys.stderr)
                 sys.exit(1)
-            # auto mode: try next engine
 
-    if args.engine == "wps-basic":
-        ok, err = convert_wps(pdf_path, output_path, engine="basic")
-        if ok:
-            success = True
-            used_engine = "WPS (basic)"
-        else:
-            print(f"  WPS basic failed: {err}", file=sys.stderr)
-            sys.exit(1)
-
+    # Fallback to PyMuPDF
     if not success and args.engine in ("auto", "pymupdf"):
         ok, err = convert_pymupdf(pdf_path, output_path, dpi=args.dpi)
         if ok:

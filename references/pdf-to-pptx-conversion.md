@@ -4,28 +4,37 @@
 
 编译 Beamer 幻灯片后，可将 PDF 转换为 PPTX 格式以便在 PowerPoint/WPS 中打开或投影。
 
-**核心方法**: 将 PDF 每页渲染为高清图片，然后逐页插入 PPTX 幻灯片。
+## 转换引擎
 
-## 重要限制
+脚本按优先级自动检测可用引擎：
 
-⚠️ **转换后的 PPTX 中，每页是一张完整图片，文字不可编辑。**
+| 优先级 | 引擎 | 文字可编辑 | 依赖 | 说明 |
+|--------|------|-----------|------|------|
+| 1 | WPS pdf2ppt (AI) | ✅ | WPS Office VIP | 质量最好，需本地安装 WPS |
+| 2 | WPS pdf2ppt (basic) | ✅ | WPS Office VIP | 更快，需本地安装 WPS |
+| 3 | PyMuPDF (图片) | ❌ | pip install PyMuPDF | 通用兜底，任何平台可用 |
 
-- PDF 是权威输出，PPTX 是辅助输出
-- 如果用户需要 **可编辑的 PPTX**（文字、形状可修改），应该使用 `sjtu-ppt-template` skill（python-pptx 方案）
-- 本方案适用于：最终定稿后需要 PPTX 格式投影、或在没有 LaTeX 环境的电脑上演示
+**WPS 是可选增强**：没有 WPS 时自动回退到 PyMuPDF 图片模式。
 
 ## 转换命令
 
-### 基本转换
+### 自动模式（推荐）
 
 ```bash
 python scripts/pdf_to_pptx.py --input slides.pdf
 ```
 
-### 指定输出和分辨率
+### 指定引擎
 
 ```bash
-python scripts/pdf_to_pptx.py --input slides.pdf --output presentation.pptx --scale 2
+python scripts/pdf_to_pptx.py --input slides.pdf --engine wps       # 强制 WPS
+python scripts/pdf_to_pptx.py --input slides.pdf --engine pymupdf   # 强制 PyMuPDF
+```
+
+### 指定 DPI（仅 PyMuPDF 模式）
+
+```bash
+python scripts/pdf_to_pptx.py --input slides.pdf --engine pymupdf --dpi 300
 ```
 
 ### 参数说明
@@ -34,43 +43,44 @@ python scripts/pdf_to_pptx.py --input slides.pdf --output presentation.pptx --sc
 |------|--------|------|
 | `--input` / `-i` | (必填) | 输入 PDF 路径 |
 | `--output` / `-o` | 与 PDF 同名 | 输出 PPTX 路径 |
-| `--scale` / `-s` | 2 | 渲染倍率（2 = 1920px 宽，3 = 2880px 宽） |
+| `--engine` / `-e` | `auto` | 转换引擎 |
+| `--dpi` / `-d` | 300 | PyMuPDF 渲染 DPI |
 
-## 渲染质量
+## WPS 引擎（可选，产生可编辑 PPTX）
 
-| 倍率 | 分辨率 | 文件大小 | 适用场景 |
-|------|--------|----------|----------|
-| 1x | ~960px 宽 | 小 | 快速预览 |
-| 2x | ~1920px 宽 | 中 | 日常投影（推荐） |
-| 3x | ~2880px 宽 | 大 | 打印、高清显示 |
+如果系统安装了 WPS Office，脚本会自动检测并优先使用 `kwpsconvert.exe pdf2ppt`。
 
-## 图片适配策略
+**效果**：
+- 文字是 PowerPoint 原生文本框，可直接编辑
+- 公式和图片转为嵌入图片（合理限制）
+- 转换速度 4~12 秒
 
-Beamer PDF 页面比例固定为 16:9（当使用 `aspectratio=169` 时），与 PPTX 幻灯片一致。脚本会：
+**要求**：
+- 本地安装 WPS Office（免费版即可安装 CLI 工具）
+- VIP 账号（AI 模式需要，basic 模式可能不需要）
 
-1. 渲染 PDF 页面为 PNG
-2. 居中裁剪到精确的 16:9 比例
-3. 插入 PPTX 全屏尺寸
+**安装 WPS**（可选）：
+- Windows: 从 https://www.wps.cn/ 下载安装
+- 安装后脚本自动检测，无需额外配置
 
-## 依赖库
+## PyMuPDF 引擎（通用兜底）
+
+任何平台都可用，只需 pip 安装：
 
 ```bash
-pip install pypdfium2 python-pptx Pillow
+pip install PyMuPDF python-pptx Pillow
 ```
 
-- `pypdfium2`: PDF 渲染（自带渲染引擎，无需外部 poppler）
-- `python-pptx`: PPTX 生成
-- `Pillow`: 图片处理
+**效果**：
+- 每页 PDF 渲染为高分辨率 PNG 图片
+- 插入 PPTX 作为全屏背景图
+- 文字不可编辑，但视觉效果清晰
 
 ## Visual QA（预览检查）
 
-转换前可用 `preview_slides.py` 生成预览图片进行视觉检查：
-
 ```bash
-python scripts/preview_slides.py --input slides.pdf --output-dir previews/
+python scripts/preview_slides.py --input slides.pdf --output-dir previews/ --dpi 200
 ```
-
-这会生成 `previews/slide_0001.png` 等图片文件，可以逐页检查排版质量。
 
 ## 与 sjtu-ppt-template 的区别
 
@@ -78,7 +88,5 @@ python scripts/preview_slides.py --input slides.pdf --output-dir previews/
 |------|--------------------------|-------------------|
 | 排版引擎 | LaTeX (XeLaTeX) | python-pptx |
 | 公式排版 | 完美支持 | 有限 |
-| 输出格式 | PDF (主) + PPTX (辅) | PPTX |
-| PPTX 可编辑性 | ❌ 图片不可编辑 | ✅ 文字/形状可编辑 |
-| 适用场景 | 学术报告、论文答辩 | 活动展示、需要后期修改 |
-| 制作速度 | 首次编译较慢 | 较快 |
+| PPTX 可编辑性 | ⚠️ WPS: 文字可编辑 / PyMuPDF: 图片 | ✅ 完全可编辑 |
+| 适用场景 | 学术报告、公式密集 | 活动展示、需要后期修改 |
