@@ -166,17 +166,6 @@ pip install PyMuPDF python-pptx Pillow
 
 - **WPS Office** — 提供可编辑 PPTX 输出（免费版即可，从 [wps.cn](https://www.wps.cn/) 下载）
 
-## 与 sjtu-ppt-template 的关系
-
-本项目与 [sjtu-ppt-template](~/.claude/skills/sjtu-ppt-template)（python-pptx 方案）并存：
-
-| 特性 | sjtu-beamer-ppt | sjtu-ppt-template |
-|------|----------------|-------------------|
-| 排版引擎 | LaTeX (XeLaTeX) | python-pptx |
-| 公式排版 | ⭐ 完美 | 有限 |
-| PPTX 可编辑 | ⚠️ 需 WPS | ✅ 完全可编辑 |
-| 适用场景 | 学术报告、公式密集 | 活动展示、需后期修改 |
-
 ## 许可
 
 - SJTUBeamer 模板：[Apache-2.0](https://github.com/sjtug/SJTUBeamer/blob/main/LICENSE)
