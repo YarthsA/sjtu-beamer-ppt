@@ -25,14 +25,23 @@ def find_wps():
     if path:
         return path
 
-    # 2. Search common install locations via environment variables
-    env_candidates = []
+    # 2. Search common install locations
+    search_roots = []
     for var in ("LOCALAPPDATA", "PROGRAMFILES", "PROGRAMFILES(X86)"):
         base = os.environ.get(var, "")
         if base:
-            env_candidates.append(Path(base) / "kingsoft")
+            search_roots.append(Path(base) / "kingsoft")
 
-    # 3. Search registry (Windows only)
+    # 3. Search all drive roots for "WPS Office" (common on non-C: drives)
+    if sys.platform == "win32":
+        import string
+        for letter in string.ascii_uppercase:
+            drive = Path(f"{letter}:/")
+            if drive.exists():
+                search_roots.append(drive / "WPS Office")
+                search_roots.append(drive / "kingsoft")
+
+    # 4. Search registry (Windows only)
     try:
         import winreg
         for hive in (winreg.HKEY_CURRENT_USER, winreg.HKEY_LOCAL_MACHINE):
@@ -48,7 +57,7 @@ def find_wps():
                                 with winreg.OpenKey(key, name) as sub:
                                     val, _ = winreg.QueryValueEx(sub, "InstallPath")
                                     if val:
-                                        env_candidates.append(Path(val))
+                                        search_roots.append(Path(val))
                             except OSError:
                                 pass
                 except OSError:
@@ -56,13 +65,12 @@ def find_wps():
     except ImportError:
         pass  # not Windows
 
-    # 4. Scan candidate directories for kwpsconvert.exe
-    for base in env_candidates:
-        if not base.exists():
+    # 5. Scan for kwpsconvert.exe
+    for root in search_roots:
+        if not root.exists():
             continue
-        # WPS version dirs are typically under office6/
         for pattern in ["**/office6/kwpsconvert.exe", "**/kwpsconvert.exe"]:
-            for match in base.glob(pattern):
+            for match in root.glob(pattern):
                 return str(match)
 
     return None
