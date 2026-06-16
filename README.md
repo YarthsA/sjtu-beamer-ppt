@@ -71,14 +71,6 @@ sjtu-beamer-ppt/
 - [讲稿备注指南](references/speaker-notes-guide.md)
 - [PDF→PPTX 转换](references/pdf-to-pptx-conversion.md)
 
-## 已知陷阱
-
-1. **`\makebottom`**：SJTUBeamer 自动生成中文"谢谢"页，英文 PPT 必须删除
-2. **`\institute`**：会挤压标题页空间导致溢出，建议删除
-3. **导航栏**：`\setbeamertemplate{navigation symbols}{\insertframenumber/\inserttotalframenumber}` 只保留页码
-4. **PDF 被锁定**：Windows 阅读器锁文件，用 `-jobname=tmp` 编译后 `mv -f` 覆盖
-5. **图片缓存**：`\graphicspath` 按序搜索，更新图后检查所有路径下的同名文件
-
 ## 许可
 
 SJTUBeamer 模板使用 Apache-2.0 许可。校徽资源由上海交通大学持有版权。
