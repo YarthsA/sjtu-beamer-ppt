@@ -35,24 +35,6 @@
 \end{frame}
 ```
 
-### 公式帧
-```latex
-\begin{frame}{公式标题}
-  \begin{equation}
-    E = mc^2
-  \end{equation}
-\end{frame}
-```
-
-### 代码帧（必须加 `[fragile]`）
-```latex
-\begin{frame}[fragile]{代码标题}
-  \begin{codeblock}[language=Python]{Python}
-import numpy as np
-  \end{codeblock}
-\end{frame}
-```
-
 ### 表格帧
 ```latex
 \begin{frame}{表格标题}
@@ -73,11 +55,9 @@ import numpy as np
 ### 图片帧
 ```latex
 \begin{frame}{图片标题}
-  \begin{figure}
-    \centering
+  \begin{center}
     \includegraphics[width=0.8\textwidth]{image.png}
-    \caption{图片说明}
-  \end{figure}
+  \end{center}
 \end{frame}
 ```
 
@@ -90,37 +70,6 @@ import numpy as np
   \begin{alertblock}{警告}
     需要注意的内容
   \end{alertblock}
-  \begin{exampleblock}{示例}
-    示例内容
-  \end{exampleblock}
-\end{frame}
-```
-
-### 长内容帧（自动分页）
-```latex
-\begin{frame}[allowframebreaks]{参考文献}
-  \printbibliography[heading=none]
-\end{frame}
-```
-
-## 覆盖与动画
-
-### 逐步显示（pause）
-```latex
-\begin{frame}{逐步显示}
-  第一步内容 \pause
-  第二步内容 \pause
-  第三步内容
-\end{frame}
-```
-
-### 条件显示
-```latex
-\begin{frame}{条件显示}
-  \only<1>{仅第 1 页显示}
-  \only<2>{仅第 2 页显示}
-  \uncover<1-2>{第 1-2 页显示}
-  \visible<3>{从第 3 页开始可见}
 \end{frame}
 ```
 
@@ -133,29 +82,59 @@ import numpy as np
 对齐公式: \begin{align*} ... \end{align*}
 ```
 
-### 列表
-```latex
-\begin{itemize}       % 无序列表
-\begin{enumerate}     % 有序列表
-\begin{description}   % 定义列表
-```
-
 ### 高亮
 ```latex
 \alert{红色强调文字}
 \textbf{粗体}
-\textit{斜体}
-\highlight{主题色高亮}  % SJTUBeamer 特有
 ```
+
+## SJTUBeamer 定制配置
+
+### 隐藏导航栏超链接（仅保留页码）
+
+SJTUBeamer 右下角默认显示导航超链接图标（前后页箭头等）和页码。去掉图标只保留页码：
+
+```latex
+\setbeamertemplate{navigation symbols}{\insertframenumber/\inserttotalframenumber}
+```
+
+**注意**：不要用 `{}` 清空，否则页码也会丢失（SJTUBeamer 的页码在 navigation symbols 区域内）。
+
+### 移除封面机构名（解决标题溢出）
+
+`\institute{...}` 会占用标题页空间，常导致标题文字被压缩或溢出。建议直接删除 `\institute` 行。
+
+```latex
+% 删除这行：
+% \institute[SJTU]{上海交通大学}
+```
+
+### 移除自动结束页
+
+SJTUBeamer 的 `\makebottom` 命令会生成一张中文"谢谢"结束页。英文 PPT 必须删除此命令。
+
+如需尾页重复封面：
+```latex
+% 删掉 \makebottom，改用：
+\maketitle
+\end{document}
+```
+
+### 中英文版本同步
+
+如果需要中英文两个版本，共用同一份图片资源：
+```latex
+\graphicspath{{images/}{figures/}}
+```
+
+**关键**：更新图片后，必须检查 `\graphicspath` 中所有目录下的同名文件，覆盖旧版缓存。LaTeX 按 `\graphicspath` 顺序搜索，第一个匹配到的文件被使用。
 
 ## 常见陷阱
 
-1. **代码帧必须加 `[fragile]`**: 含有 `verbatim`、`lstlisting`、`codeblock` 的 frame 必须加 `[fragile]` 选项
-2. **中文编码**: 使用 `ctexbeamer` 文档类，不要用 `beamer`
-3. **图片路径**: 使用 `\graphicspath{{figures/}}` 统一设置图片搜索路径
+1. **中文编码**: 使用 `ctexbeamer` 文档类，不要用 `beamer`
+2. **图片路径**: 使用 `\graphicspath` 统一设置搜索路径，注意缓存覆盖
+3. **标题**: 使用结论式标题（"方法 A 提升了 15% 精度"），而非话题式标题（"实验结果"）
 4. **特殊字符**: LaTeX 中 `%` `#` `&` `_` `{` `}` 需要转义
-5. **行距**: Beamer 内容空间有限，避免一个 frame 塞太多内容（建议 ≤5 个要点）
-6. **标题**: 建议使用结论式标题（"方法 A 提升了 15% 精度"），而非话题式标题（"实验结果"）
 
 ## 内容精简原则
 

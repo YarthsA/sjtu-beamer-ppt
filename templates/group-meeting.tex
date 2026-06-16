@@ -19,17 +19,19 @@
 
 \graphicspath{{figures/}}
 
+% 仅保留页码，去掉导航超链接
+\setbeamertemplate{navigation symbols}{\insertframenumber/\inserttotalframenumber}
+
 \AtBeginSection[]{
   \begin{frame}
     \tableofcontents[currentsection,hideallsubsections]
   \end{frame}
 }
 
-% ── 汇报信息 ──
+% 汇报信息 — 不建议用 \institute（会占用标题页空间）
 \title{组会汇报}
-\subtitle{进度汇报 — \today}
+%\subtitle{进度汇报}
 \author{汇报人}
-\institute[课题组]{课题组名称}
 
 \begin{document}
 
@@ -37,7 +39,6 @@
 
 % ══════════════════════════════════════
 \section{本周工作}
-% ══════════════════════════════════════
 
 \begin{frame}{完成的工作}
   \begin{itemize}
@@ -48,7 +49,6 @@
 \end{frame}
 
 \begin{frame}{初步结果}
-  % 插入本周实验/调试结果
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
       \textbf{结果}
@@ -67,7 +67,6 @@
 
 % ══════════════════════════════════════
 \section{遇到的问题}
-% ══════════════════════════════════════
 
 \begin{frame}{问题与困难}
   \begin{alertblock}{问题一}
@@ -81,7 +80,6 @@
 
 % ══════════════════════════════════════
 \section{下周计划}
-% ══════════════════════════════════════
 
 \begin{frame}{下周计划}
   \begin{enumerate}
@@ -91,6 +89,7 @@
   \end{enumerate}
 \end{frame}
 
-\makebottom
+% 尾页：重复封面（不使用 \makebottom，避免中英文混用问题）
+\maketitle
 
 \end{document}

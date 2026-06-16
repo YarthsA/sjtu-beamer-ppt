@@ -77,7 +77,7 @@ def find_wps():
 
 
 def convert_wps(pdf_path, output_path, engine="ai"):
-    """Convert PDF to editable PPTX using WPS."""
+    """Convert PDF to editable PPTX using WPS (requires WPS VIP)."""
     wps = find_wps()
     if not wps:
         return False, "WPS not found on this system"
@@ -98,7 +98,7 @@ def convert_wps(pdf_path, output_path, engine="ai"):
     if result.returncode == 0 and output_path.exists():
         return True, None
     elif result.returncode in (100, 101):
-        return False, "WPS conversion failed (exit 100/101)"
+        return False, "WPS requires VIP account (exit 100/101)"
     else:
         msg = stdout.strip() or stderr.strip() or f"exit code {result.returncode}"
         return False, msg

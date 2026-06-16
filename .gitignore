@@ -1,21 +1,28 @@
-# 编译产物
-*.aux
-*.log
-*.nav
-*.out
-*.snm
-*.toc
-*.vrb
-*.fls
-*.fdb_latexmk
-*.xdv
-*.synctex.gz
+# SJTUBeamer submodule internals — only need .sty + vi/ + latexmkrc
+assets/SJTUBeamer/.git/
+assets/SJTUBeamer/.github/
+assets/SJTUBeamer/.vscode/
+assets/SJTUBeamer/.gitignore
+assets/SJTUBeamer/.gitattributes
+assets/SJTUBeamer/src/
+assets/SJTUBeamer/build/
+assets/SJTUBeamer/contents/
+assets/SJTUBeamer/contrib/
+assets/SJTUBeamer/figures/
+assets/SJTUBeamer/latexindent.yaml
+assets/SJTUBeamer/main.tex
+assets/SJTUBeamer/Makefile
+assets/SJTUBeamer/ref.bib
+assets/SJTUBeamer/README*.md
+assets/SJTUBeamer/CONTRIBUTING.md
+assets/SJTUBeamer/LICENSE
 
-# 输出文件（用户自行编译生成）
-*.pdf
-*.pptx
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
 
-# 临时文件
-*~
-*.swp
-*.bak
+# Python
+__pycache__/
+*.pyc
+*.egg-info/

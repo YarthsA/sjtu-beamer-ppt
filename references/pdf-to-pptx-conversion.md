@@ -10,8 +10,8 @@
 
 | 优先级 | 引擎 | 文字可编辑 | 依赖 | 说明 |
 |--------|------|-----------|------|------|
-| 1 | WPS pdf2ppt (AI) | ✅ | WPS Office | 质量最好，需本地安装 WPS |
-| 2 | WPS pdf2ppt (basic) | ✅ | WPS Office | 更快，需本地安装 WPS |
+| 1 | WPS pdf2ppt (AI) | ✅ | WPS Office VIP | 质量最好，需本地安装 WPS |
+| 2 | WPS pdf2ppt (basic) | ✅ | WPS Office VIP | 更快，需本地安装 WPS |
 | 3 | PyMuPDF (图片) | ❌ | pip install PyMuPDF | 通用兜底，任何平台可用 |
 
 **WPS 是可选增强**：没有 WPS 时自动回退到 PyMuPDF 图片模式。
@@ -56,7 +56,8 @@ python scripts/pdf_to_pptx.py --input slides.pdf --engine pymupdf --dpi 300
 - 转换速度 4~12 秒
 
 **要求**：
-- 本地安装 WPS Office
+- 本地安装 WPS Office（免费版即可安装 CLI 工具）
+- VIP 账号（AI 模式需要，basic 模式可能不需要）
 
 **安装 WPS**（可选）：
 - Windows: 从 https://www.wps.cn/ 下载安装

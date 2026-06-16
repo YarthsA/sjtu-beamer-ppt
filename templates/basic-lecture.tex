@@ -1,60 +1,50 @@
 % !TeX program = xelatex
 % !TeX encoding = UTF-8
 % basic-lecture.tex — 基础讲座模板
-% 主题选项: maxplus/max/min, red/blue, light/dark, topright/bottomright
-% 导航栏: miniframes/infolines/sidebar/default/smoothbars/split/shadow/tree/smoothtree
 
 \documentclass[
-    aspectratio=169,  % 16:9 比例
-    fontset=windows,  % Windows 中文字体（SimSun/SimHei）
+    aspectratio=169,
+    fontset=windows,
 ]{ctexbeamer}
 
 \mode<presentation>
 
-% ── 主题选择 ──
-% 修改以下行切换风格
+% 修改此行切换风格：maxplus/max/min, red/blue, light/dark
 \usetheme[maxplus,red,light,shadow]{sjtubeamer}
-% maxplus: 现代全幅封面 | max: 经典渐变封面 | min: 极简封面
-% red/blue: 主色调 | light/dark: 亮暗模式
-% topright/bottomright: 校徽位置
 
-% ── 常用宏包 ──
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{tikz}
-\usepackage{listings}
 \usepackage{fontawesome5}
 \usepackage{multicol}
 
 \graphicspath{{figures/}}
 
-% ── 节目录 ──
+% 仅保留页码，去掉导航超链接
+\setbeamertemplate{navigation symbols}{\insertframenumber/\inserttotalframenumber}
+
+% 节目录
 \AtBeginSection[]{
   \begin{frame}
     \tableofcontents[currentsection,hideallsubsections]
   \end{frame}
 }
 
-% ── 标题信息 ──
+% 标题 — 不建议用 \institute（会占用标题页空间）
 \title{幻灯片标题}
-\subtitle{Subtitle}
+%\subtitle{副标题（可选）}
 \author{作者姓名}
-\institute[缩写]{单位全称}
 \date{\today}
 
 \begin{document}
 
-% ── 封面 ──
 \maketitle
 
-% ── 目录 ──
 \begin{frame}{目录}
   \tableofcontents[hideallsubsections]
 \end{frame}
 
-% ══════════════════════════════════════
-% 第一节
 % ══════════════════════════════════════
 \section{第一节标题}
 
@@ -86,8 +76,6 @@
 \end{frame}
 
 % ══════════════════════════════════════
-% 第二节
-% ══════════════════════════════════════
 \section{第二节标题}
 
 \begin{frame}{公式示例}
@@ -100,29 +88,9 @@
   \begin{alertblock}{注意}
     这是一个警告框。
   \end{alertblock}
-
-  \begin{exampleblock}{示例}
-    这是一个示例框。
-  \end{exampleblock}
 \end{frame}
 
-\begin{frame}[fragile]{代码示例}
-  \begin{codeblock}[language=Python]{Python 代码}
-import numpy as np
-
-def hello():
-    print("Hello, SJTU!")
-  \end{codeblock}
-\end{frame}
-
-% ── 参考文献（如有） ──
-% \usepackage[backend=biber,style=gb7714-2015]{biblatex}
-% \addbibresource{ref.bib}
-% \begin{frame}[allowframebreaks]
-%   \printbibliography[heading=none]
-% \end{frame}
-
-% ── 结束页 ──
-\makebottom
+% 尾页：重复封面（不使用 \makebottom，避免中英文混用问题）
+\maketitle
 
 \end{document}

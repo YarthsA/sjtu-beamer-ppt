@@ -16,25 +16,25 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{tikz}
-\usepackage{listings}
 \usepackage{fontawesome5}
 \usepackage{multicol}
-\usepackage{hyperref}
 
 \graphicspath{{figures/}}
 
-% ── 节目录 ──
+% 仅保留页码，去掉导航超链接
+\setbeamertemplate{navigation symbols}{\insertframenumber/\inserttotalframenumber}
+
+% 节目录
 \AtBeginSection[]{
   \begin{frame}
     \tableofcontents[currentsection,subsectionstyle=show/show/hide]
   \end{frame}
 }
 
-% ── 标题 ──
+% 标题 — 不建议用 \institute（会占用标题页空间导致溢出）
 \title{学术报告标题}
-\subtitle{Academic Report Subtitle}
+%\subtitle{副标题（可选）}
 \author{报告人姓名}
-\institute[Lab]{实验室/课题组名称}
 \date{\today}
 
 \begin{document}
@@ -57,31 +57,6 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{文献综述}
-  \begin{columns}[T]
-    \begin{column}{0.55\textwidth}
-      \begin{itemize}
-        \item \textbf{方法 A} (Author, Year)
-        \begin{itemize}
-          \item 优点 / 局限性
-        \end{itemize}
-        \item \textbf{方法 B} (Author, Year)
-        \begin{itemize}
-          \item 优点 / 局限性
-        \end{itemize}
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.42\textwidth}
-      % 此处可插入文献关系图
-      \begin{figure}
-        \centering
-        % \includegraphics[width=\textwidth]{literature-map.png}
-        \caption*{文献关系图（待插入）}
-      \end{figure}
-    \end{column}
-  \end{columns}
-\end{frame}
-
 % ══════════════════════════════════════
 \section{研究方法}
 % ══════════════════════════════════════
@@ -92,23 +67,10 @@
   \end{block}
 
   \begin{enumerate}
-    \item 步骤一：描述
-    \item 步骤二：描述
-    \item 步骤三：描述
+    \item 步骤一
+    \item 步骤二
+    \item 步骤三
   \end{enumerate}
-\end{frame}
-
-\begin{frame}{方法细节}
-  \begin{equation}
-    \mathcal{L} = \frac{1}{N} \sum_{i=1}^{N} \ell(f(x_i), y_i) + \lambda \|\theta\|_2^2
-  \end{equation}
-
-  \vspace{1em}
-  \begin{itemize}
-    \item $\mathcal{L}$: 损失函数
-    \item $f(x_i)$: 模型预测
-    \item $\lambda \|\theta\|_2^2$: 正则化项
-  \end{itemize}
 \end{frame}
 
 % ══════════════════════════════════════
@@ -122,27 +84,11 @@
       \toprule
       \textbf{方法} & \textbf{指标 A} & \textbf{指标 B} \\
       \midrule
-      Baseline 1 & 85.2 & 72.1 \\
-      Baseline 2 & 87.6 & 74.3 \\
+      Baseline & 85.2 & 72.1 \\
       \textbf{本文方法} & \textbf{91.3} & \textbf{78.5} \\
       \bottomrule
     \end{tabular}
-    \caption{实验结果对比}
   \end{table}
-\end{frame}
-
-\begin{frame}{结果分析}
-  \begin{itemize}
-    \item 关键发现一
-    \item 关键发现二
-    \item 关键发现三
-  \end{itemize}
-
-  % 此处可插入结果图表
-  % \begin{figure}
-  %   \centering
-  %   \includegraphics[width=0.8\textwidth]{results.png}
-  % \end{figure}
 \end{frame}
 
 % ══════════════════════════════════════
@@ -151,9 +97,9 @@
 
 \begin{frame}{总结}
   \begin{enumerate}
-    \item 贡献一：简要描述
-    \item 贡献二：简要描述
-    \item 贡献三：简要描述
+    \item 贡献一
+    \item 贡献二
+    \item 贡献三
   \end{enumerate}
 \end{frame}
 
@@ -163,20 +109,9 @@
     \item 方向二
     \item 方向三
   \end{itemize}
-
-  \vspace{2em}
-  \begin{center}
-    \Large \textbf{谢谢！欢迎提问}
-  \end{center}
 \end{frame}
 
-% ── 参考文献 ──
-% \usepackage[backend=biber,style=gb7714-2015]{biblatex}
-% \addbibresource{ref.bib}
-% \begin{frame}[allowframebreaks]
-%   \printbibliography[heading=none]
-% \end{frame}
-
-\makebottom
+% 尾页：重复封面（不使用 \makebottom，避免中英文混用问题）
+\maketitle
 
 \end{document}

@@ -16,12 +16,13 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{tikz}
-\usepackage{listings}
 \usepackage{fontawesome5}
 \usepackage{multicol}
-\usepackage{hyperref}
 
 \graphicspath{{figures/}}
+
+% 仅保留页码，去掉导航超链接
+\setbeamertemplate{navigation symbols}{\insertframenumber/\inserttotalframenumber}
 
 \AtBeginSection[]{
   \begin{frame}
@@ -29,11 +30,10 @@
   \end{frame}
 }
 
-% ── 答辩信息 ──
+% 答辩信息 — 不建议用 \institute（会占用标题页空间）
 \title{论文标题}
-\subtitle{Thesis Title}
+%\subtitle{副标题（可选）}
 \author{答辩人姓名}
-\institute[学院]{学院名称 \quad 专业名称}
 \date{\today}
 
 \begin{document}
@@ -46,7 +46,6 @@
 
 % ══════════════════════════════════════
 \section{选题背景与意义}
-% ══════════════════════════════════════
 
 \begin{frame}{研究背景}
   \begin{itemize}
@@ -77,7 +76,6 @@
 
 % ══════════════════════════════════════
 \section{研究内容与方法}
-% ══════════════════════════════════════
 
 \begin{frame}{研究内容}
   \begin{block}{研究目标}
@@ -91,17 +89,8 @@
   \end{enumerate}
 \end{frame}
 
-\begin{frame}{技术路线}
-  % 此处可插入技术路线图
-  \begin{center}
-    % \includegraphics[width=0.85\textwidth]{tech-roadmap.png}
-    技术路线图（待插入）
-  \end{center}
-\end{frame}
-
 \begin{frame}{核心方法}
   \begin{equation}
-    % 公式占位
     y = f(x; \theta)
   \end{equation}
 
@@ -113,16 +102,6 @@
 
 % ══════════════════════════════════════
 \section{实验与结果分析}
-% ══════════════════════════════════════
-
-\begin{frame}{实验设计}
-  \begin{itemize}
-    \item \textbf{数据集}: 描述
-    \item \textbf{评估指标}: 描述
-    \item \textbf{对比方法}: 描述
-    \item \textbf{实验环境}: 描述
-  \end{itemize}
-\end{frame}
 
 \begin{frame}{主要结果}
   \begin{table}
@@ -136,29 +115,11 @@
       \textbf{本文方法} & \textbf{89.2} & \textbf{81.6} & \textbf{84.3} \\
       \bottomrule
     \end{tabular}
-    \caption{主要实验结果}
-  \end{table}
-\end{frame}
-
-\begin{frame}{消融实验}
-  \begin{table}
-    \centering
-    \begin{tabular}{lc}
-      \toprule
-      \textbf{配置} & \textbf{指标 A} \\
-      \midrule
-      完整模型 & 89.2 \\
-      去掉模块 A & 86.1 \\
-      去掉模块 B & 87.3 \\
-      \bottomrule
-    \end{tabular}
-    \caption{消融实验结果}
   \end{table}
 \end{frame}
 
 % ══════════════════════════════════════
 \section{总结与展望}
-% ══════════════════════════════════════
 
 \begin{frame}{论文总结}
   \begin{enumerate}
@@ -176,15 +137,7 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}{致谢}
-  \begin{center}
-    \Large
-    感谢导师和评委老师的指导与建议！\\[2em]
-    \normalsize
-    \faIcon{envelope}\quad email@example.com
-  \end{center}
-\end{frame}
-
-\makebottom
+% 尾页：重复封面（不使用 \makebottom，避免中英文混用问题）
+\maketitle
 
 \end{document}
