@@ -90,6 +90,44 @@ if ($exitCode -eq 0 -and (Test-Path $pdfPath)) {
     Write-Host ""
     Write-Host "=== Compilation SUCCEEDED ===" -ForegroundColor Green
     Write-Host "  Output: $pdfPath" -ForegroundColor Cyan
+
+    # --- Overflow Check ---
+    $logName = [System.IO.Path]::ChangeExtension($TexFile, ".log")
+    $logPath = Join-Path $WorkDir $logName
+    if (Test-Path $logPath) {
+        $overfulls = Select-String -Path $logPath -Pattern "Overfull \\[hv]box"
+        if ($overfulls) {
+            Write-Host ""
+            Write-Host "*** OVERFLOW WARNINGS ***" -ForegroundColor Yellow
+            Write-Host "  Content may exceed slide boundaries:" -ForegroundColor Yellow
+            $shown = @{}
+            foreach ($o in $overfulls) {
+                $line = $o.Line.Trim()
+                # Extract Overfull type and amount
+                if ($line -match "Overfull \\hbox") {
+                    $type = "H-overflow (too wide)"
+                    $fix = "shrink width, smaller font, or fewer columns"
+                } else {
+                    $type = "V-overflow (too tall)"
+                    $fix = "reduce items, smaller font, or split frame"
+                }
+                $amt = ""
+                if ($line -match "by (\d+\.?\d*pt)") {
+                    $amt = "($($Matches[1]))"
+                }
+                # Deduplicate by type+amount
+                $key = "$type$amt"
+                if (-not $shown[$key]) {
+                    Write-Host "  [$type] $amt" -ForegroundColor Yellow
+                    Write-Host "    Fix: $fix" -ForegroundColor DarkGray
+                    $shown[$key] = $true
+                }
+            }
+            Write-Host "  Edit .tex and recompile to resolve." -ForegroundColor Yellow
+        } else {
+            Write-Host "  [OK] No overflow detected" -ForegroundColor DarkGray
+        }
+    }
 } else {
     Write-Host ""
     Write-Host "=== Compilation FAILED (exit code: $exitCode) ===" -ForegroundColor Red

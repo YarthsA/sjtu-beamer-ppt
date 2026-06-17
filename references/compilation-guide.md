@@ -108,3 +108,43 @@ grep "^!" main.log | tail -10
 - `!` = 致命错误，编译停止
 - `Warning` = 警告，通常不影响输出
 - `Overfull \hbox` = 内容溢出，检查该页内容是否过多
+
+## 溢出诊断
+
+编译成功并不代表排版完美。LaTeX 会在 `.log` 中记录 `Overfull` 警告，表示内容超出了幻灯片边界。
+
+### 自动诊断
+
+使用 `scripts/compile_tex.ps1` 编译后，脚本会自动扫描 `.log` 中的溢出警告并展示：
+
+```
+*** OVERFLOW WARNINGS ***
+  [H-overflow (too wide)] (12.5pt)
+    Fix: shrink width, smaller font, or fewer columns
+  [V-overflow (too tall)] (8.3pt)
+    Fix: reduce items, smaller font, or split frame
+```
+
+### 手动查询
+
+```bash
+grep "Overfull" main.log | head -20
+```
+
+### 溢出分类与修复
+
+| 类型 | 含义 | 常见原因 | 修复 |
+|------|------|----------|------|
+| `Overfull \hbox` | 水平溢出 | 表格太宽、代码行太长、图片过大 | `\footnotesize`、减小 `width`、缩小 `\tabcolsep` |
+| `Overfull \vbox` | 垂直溢出 | 列表项太多、block 堆叠、图片太高 | `\small`、`\setlength{\itemsep}`、拆分 frame |
+
+### 粒度说明
+
+`.log` 中的溢出警告按行号报告（不是按幻灯片页码）。定位到具体 frame：
+
+```bash
+# 找到溢出行号对应的 frame
+grep -n "begin{frame}" main.tex
+```
+
+然后对照溢出行号确定是哪个 frame，按 [tex-generation-guide.md](tex-generation-guide.md) 的防溢出规范修复。

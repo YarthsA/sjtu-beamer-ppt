@@ -40,6 +40,14 @@ description: Create SJTU-style Beamer (LaTeX) presentations using SJTUBeamer tem
 4. **PDF 被锁定**：Windows 阅读器锁文件，用 `-jobname=tmp` 编译后 `mv -f` 覆盖
 5. **图片缓存**：`\graphicspath` 可能读到旧版缓存目录，更新图后检查所有搜索路径
 
+## 防溢出规范
+
+Beamer 幻灯片空间有限（16:9 = 13.3"x7.5"），内容过多会导致文字/图片溢出。
+
+**生成 .tex 前必须遵守：** 详见 [references/tex-generation-guide.md](references/tex-generation-guide.md) 的「防溢出规范」章节。
+
+**编译后自动诊断：** `scripts/compile_tex.ps1` 编译后自动扫描 `.log` 中的 `Overfull` 警告，输出具体修复建议。详见 [references/compilation-guide.md](references/compilation-guide.md) 的「溢出诊断」章节。
+
 ## 资源部署
 
 编译时，脚本自动将 `.sty` 文件和 `vi/` 校徽资源从 `assets/SJTUBeamer/` 复制到工作目录。
